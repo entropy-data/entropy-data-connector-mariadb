@@ -14,7 +14,7 @@
     <name>entropy-data-connector-mariadb</name>
     <description>Entropy Data Connector for MariaDB</description>
     <properties>
-        <testcontainers.version>1.19.7</testcontainers.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
