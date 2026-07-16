@@ -2,9 +2,6 @@
 .idea/
 target/
 src/test/
-mvnw
-mvnw.cmd
-.mvn/
 .gitignore
 .dockerignore
 README.md
