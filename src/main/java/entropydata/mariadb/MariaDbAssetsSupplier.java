@@ -1,10 +1,10 @@
-package datameshmanager.mariadb;
+package entropydata.mariadb;
 
-import datameshmanager.sdk.DataMeshManagerAssetsProvider;
-import datameshmanager.sdk.DataMeshManagerStateRepository;
-import datameshmanager.sdk.client.model.Asset;
-import datameshmanager.sdk.client.model.AssetColumnsInner;
-import datameshmanager.sdk.client.model.AssetInfo;
+import entropydata.sdk.EntropyDataAssetsProvider;
+import entropydata.sdk.EntropyDataStateRepository;
+import entropydata.sdk.client.model.Asset;
+import entropydata.sdk.client.model.AssetColumnsInner;
+import entropydata.sdk.client.model.AssetInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,14 +15,14 @@ import java.util.Map;
 /**
  * Service to extract assets (schemas, tables, views) from a MariaDB database
  */
-public class MariaDbAssetsSupplier implements DataMeshManagerAssetsProvider {
+public class MariaDbAssetsSupplier implements EntropyDataAssetsProvider {
 
     private static final Logger log = LoggerFactory.getLogger(MariaDbAssetsSupplier.class);
     
     private final MariaDbProperties properties;
-    private final DataMeshManagerStateRepository stateRepository;
+    private final EntropyDataStateRepository stateRepository;
 
-    public MariaDbAssetsSupplier(MariaDbProperties properties, DataMeshManagerStateRepository stateRepository) {
+    public MariaDbAssetsSupplier(MariaDbProperties properties, EntropyDataStateRepository stateRepository) {
         this.properties = properties;
         this.stateRepository = stateRepository;
     }
