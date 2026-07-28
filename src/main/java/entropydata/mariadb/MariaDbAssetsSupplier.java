@@ -3,7 +3,7 @@ package entropydata.mariadb;
 import entropydata.sdk.EntropyDataAssetsProvider;
 import entropydata.sdk.EntropyDataStateRepository;
 import entropydata.sdk.client.model.Asset;
-import entropydata.sdk.client.model.AssetColumnsInner;
+import entropydata.sdk.client.model.AssetColumn;
 import entropydata.sdk.client.model.AssetInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,7 +167,7 @@ public class MariaDbAssetsSupplier implements EntropyDataAssetsProvider {
                 boolean isNullable = columnsRS.getInt("NULLABLE") == DatabaseMetaData.columnNullable;
                 
                 // Create and add the column
-                AssetColumnsInner column = new AssetColumnsInner();
+                AssetColumn column = new AssetColumn();
                 column.setName(columnName);
                 column.setType(columnType);
                 column.setDescription(columnRemarks != null ? columnRemarks : "");
