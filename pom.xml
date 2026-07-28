@@ -17,7 +17,23 @@
         <testcontainers.version>1.19.7</testcontainers.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Transitive CVE fixes. Remove once a Spring Boot release ships the patched Jackson BOMs. -->
+        <jackson-bom.version>3.1.5</jackson-bom.version>
+        <jackson-2-bom.version>2.21.5</jackson-2-bom.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Testcontainers 1.x pins a vulnerable commons-compress; the fix only lands in
+                 Testcontainers 2.x, which is a breaking upgrade. Remove this once we move to 2.x. -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.28.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
