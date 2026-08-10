@@ -3,8 +3,10 @@ package entropydata.mariadb;
 import entropydata.sdk.EntropyDataAssetsSynchronizer;
 import entropydata.sdk.EntropyDataClient;
 import entropydata.sdk.EntropyDataStateRepositoryRemote;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -40,13 +42,14 @@ public class Application {
             MariaDbProperties mariaDbProperties,
             EntropyDataClient client,
             AssetsSynchronizationHealth assetsSynchronizationHealth,
-            TaskExecutor taskExecutor) {
+            TaskExecutor taskExecutor,
+            ObjectProvider<BuildProperties> buildProperties) {
         try {
             var connectorId = mariaDbProperties.assets().connectorid();
             var stateRepository = new EntropyDataStateRepositoryRemote(connectorId, client);
             var assetsSupplier = new MariaDbAssetsSupplier(mariaDbProperties, stateRepository);
             var entropyDataAssetsSynchronizer = new EntropyDataAssetsSynchronizer(connectorId, client,
-                    assetsSynchronizationHealth.wrap(assetsSupplier));
+                    assetsSynchronizationHealth.wrap(assetsSupplier), connectorVersion(buildProperties));
             if (mariaDbProperties.assets().pollinterval() != null) {
                 entropyDataAssetsSynchronizer.setDelay(mariaDbProperties.assets().pollinterval());
             }
@@ -63,5 +66,14 @@ public class Application {
     @Bean
     public SimpleAsyncTaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor();
+    }
+
+    /**
+     * The version this connector runs with, so that it is visible in Entropy Data. Absent when the build information is not on the
+     * classpath, such as when the application is started from an IDE.
+     */
+    private static String connectorVersion(ObjectProvider<BuildProperties> buildProperties) {
+        var properties = buildProperties.getIfAvailable();
+        return properties != null ? properties.getVersion() : null;
     }
 }
