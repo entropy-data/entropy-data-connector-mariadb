@@ -28,17 +28,25 @@ public class Application {
         return new EntropyDataClient(host, apiKey);
     }
 
+    @Bean
+    @ConditionalOnProperty(value = "entropydata.client.mariadb.assets.enabled", havingValue = "true")
+    public AssetsSynchronizationHealth assetsSynchronizationHealth(MariaDbProperties mariaDbProperties) {
+        return new AssetsSynchronizationHealth(mariaDbProperties.assets().pollinterval());
+    }
+
     @Bean(destroyMethod = "stop")
     @ConditionalOnProperty(value = "entropydata.client.mariadb.assets.enabled", havingValue = "true")
     public EntropyDataAssetsSynchronizer entropyDataAssetsSynchronizer(
             MariaDbProperties mariaDbProperties,
             EntropyDataClient client,
+            AssetsSynchronizationHealth assetsSynchronizationHealth,
             TaskExecutor taskExecutor) {
         try {
             var connectorId = mariaDbProperties.assets().connectorid();
             var stateRepository = new EntropyDataStateRepositoryRemote(connectorId, client);
             var assetsSupplier = new MariaDbAssetsSupplier(mariaDbProperties, stateRepository);
-            var entropyDataAssetsSynchronizer = new EntropyDataAssetsSynchronizer(connectorId, client, assetsSupplier);
+            var entropyDataAssetsSynchronizer = new EntropyDataAssetsSynchronizer(connectorId, client,
+                    assetsSynchronizationHealth.wrap(assetsSupplier));
             if (mariaDbProperties.assets().pollinterval() != null) {
                 entropyDataAssetsSynchronizer.setDelay(mariaDbProperties.assets().pollinterval());
             }
